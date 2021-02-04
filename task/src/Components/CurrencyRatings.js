@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-// const io = require("socket.io-client");
-// const socket = io("https://wss.live-rates.com/");
+import "../App.css";
 
 function CurrencyRatings() {
   const [currencies, setCurrencies] = useState([]);
@@ -13,32 +12,22 @@ function CurrencyRatings() {
       console.log(data);
       setCurrencies(data);
     } else {
-      //   //Use the 'trial' as key to establish a 2-minute streaming connection with real-time data.
-      //   //After the 2-minute test, the server will drop the connection and block the IP for an Hour.
-      //   var key = "trial";
-      //   //var key = 'XXXXXXX' //YOUR LIVE-RATES SUBSCRIPTION KEY
-      //   socket.on("connect", function () {
-      //     // if you want to subscribe only specific instruments, emit instruments. To receive all instruments, comment the line below.
-      //     // var instruments = ["EURUSD", "USDJPY", "BTCUSD", "ETH"];
-      //     // socket.emit("instruments", instruments);
-      //     socket.emit("key", key);
-      //   });
-      //   socket.on("rates", function (msg) {
-      //     //Do what you want with the Incoming Rates... Enjoy!
-      //     try {
-      //       let obj = JSON.parse(msg);
-      //       console.log(obj);
-      //       setCurrencies(obj);
-      //     } catch (e) {
-      //       console.log(msg);
-      //     }
-      //   });
+        /*
+            Didn't find a way to bypass 3 request/hour limit.
+            I Tried:
+            1. using websocket to broadcast curreny changes and get updates every second       
+            2. exploring the streaming api documentation
+            3. exploring the socket.io-client documentation
+            4. adding request headers through postman
+            5. re-configuring the my ip address
+        */ 
     }
   };
   useEffect(() => {
     getCurrencies();
   }, []);
   return (
+      <>
     <table>
       <tr>
         <td><b>Currency</b></td>
@@ -51,7 +40,7 @@ function CurrencyRatings() {
         <td><b>Close</b></td>
         <td><b>Timestamp</b></td>
       </tr>
-      {currencies.length > 0 ? (
+      {currencies.length > 0 && (
         currencies.map(
           (
             { currency, rate, bid, ask, high, low, open, close, timestamp },
@@ -72,10 +61,10 @@ function CurrencyRatings() {
             );
           }
         )
-      ) : (
-        <h1>Sorry, the data is inavailabe at the moment</h1>
-      )}
+      ) }
     </table>
+    {currencies.length === 0 && <h1>Sorry, the data is in-available at the moment</h1>}
+    </>
   );
 }
 
